@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+
+<head>
+    <script src="{{url_for('static', filename='js/sidebars/color-modes.js')}}"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/sidebars/sidebars.css')}}">
+</head>
+
+<body>
+    <main class="d-flex flex-nowrap">
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <span class="fs-4">Covid-19</span> <!-- 홈페이지로 이동하는 버튼 -->
+            </a>
+            <hr>
+            <!-- 게시판 -->
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <!-- class="active" -> 현재 선택된 게시판을 표시해주는 역할 -->
+                    <a href="#" class="nav-link active">
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-white">
+                        현황
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-white">
+                        비교
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-white">
+                        분석
+                    </a>
+                </li>
+            </ul>
+            <hr>
+        </div>
+
+        <div class="b-example-divider b-example-vr"></div>
+
+
+        <div class="container p-3 ">
+            {% block contents %}
+                
+            {% endblock %}
+        </div>
+    </main>
+
+    {% block script %}
+
+    {% endblock %}
+    <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/sidebars/sidebars.js')}}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>    
+</body>
+
+</html>
