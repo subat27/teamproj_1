@@ -6,7 +6,6 @@ from pybo import db
 
 bp = Blueprint("area", __name__, url_prefix="/area")
 
-@bp.route("init_data")
 def init_data():
     df = pd.read_csv("pybo\static\data\covid_data_korea_local.csv")
     
@@ -22,28 +21,13 @@ def init_data():
         db.session.add(temp_data)
     db.session.commit()
 
-    return render_template("area/showArea.html")
+def find_data(date):
+    return Conf_Local.query.filter_by(createDt=date).all()
 
-@bp.route("find_data")
-def find_data():
-    covid_datas = Conf_Local.query.filter_by(createDt='2022-01-28').all()
-    print(covid_datas[0].confCase)
-    print(covid_datas[0].incDec)
-    print(covid_datas[0].deathCnt)
-
-
-    df = pd.read_csv("pybo\static\data\covid_data_korea_local.csv")
+@bp.route("show_data", methods=["GET", "POST"])
+def show_data():
+    if request.method == "GET":
+        return render_template("area/test.html")
     
-    covid_data_local = df[['gubun', 'deathCnt', 'defCnt', 'stdDay', 'incDec']].loc[(df["gubun"]!="합계")&(df["gubun"]!="검역")].drop_duplicates(subset=["gubun", "stdDay"]).reset_index().drop(columns=["index"])
-
-
-    print(type(covid_data_local.iloc[0, 0]))
-    print(type(covid_data_local.iloc[0, 1]))
-    print(type(covid_data_local.iloc[0, 2]))
-    print(type(covid_data_local.iloc[0, 3]))
-    print(type(covid_data_local.iloc[0, 4]))
-    
-
-
-
-    return render_template("area/resultTest.html", covid_datas=covid_datas)
+    return render_template("area/showArea.html", date=request.form["date"])
+    #return render_template("showArea.html", find_data())
