@@ -26,8 +26,12 @@ def find_data(date):
 
 @bp.route("show_data", methods=["GET", "POST"])
 def show_data():
-    if request.method == "GET":
-        return render_template("area/test.html")
-    
-    return render_template("area/showArea.html", date=request.form["date"])
+    #if request.method == "GET":
+
+    api_key = ""
+    with open("pybo\static\data\\api_keys.txt", "r", encoding="utf-8") as f:
+        api_key = f.readline()
+        
+    return render_template("area/test.html", api_key=api_key)
+    #return render_template("area/showArea.html", date=request.form["date"])
     #return render_template("showArea.html", find_data())

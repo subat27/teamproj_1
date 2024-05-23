@@ -1,3 +1,5 @@
+*/static/data/api_keys.txt
+
 # SQL Alchemy
 pybo.db
 migrations/
