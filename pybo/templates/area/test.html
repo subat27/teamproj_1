@@ -20,6 +20,7 @@
 {% block contents %}
 <div id="map"></div>
 <script>
+    let map;
     // 지도를 초기화하는 함수
     function initMap() {
         // 지도 옵션 설정
@@ -29,40 +30,35 @@
             mapId: '1a50590f00c4b6dd'
         };
         // 지도 객체 생성
-        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
         countryLayer = map.getFeatureLayer('COUNTRY');
         
         map.data.loadGeoJson("../../static/data/sido_korea.geojson")
         map.data.setStyle(function(feature){
             var color = "blue";
-            if (feature.getProperty("name") === 'SF Boundary'){
-                color = 'red';
-            }
             return {
-                fillColor: color,
                 strokeColor: color,
                 strokeWeight: 1
             };
         });
-        map.data.addListener('click', function(event){
-            feature1 = event.feature
+        
+        const infoWindow = new google.maps.InfoWindow();
 
-            alert('Feature clicked : ' + feature1.getProperty('CTP_ENG_NM'));
+        map.data.addListener('click', (event) => {
+            const content=event.feature.getProperty("CTP_ENG_NM")
+            const position=event.feature.getGeometry()
+            
+            infoWindow.setContent(content);
+            infoWindow.setPosition({ lat: 35.97, lng: 127.92 });
+            infoWindow.open(map);
+            
+
+            console.log(event.feature.getGeometry());
         });
-
-        var marker_seoul = new google.maps.Marker({
-            position: { lat: 37.5519181289039, lng: 126.991823835789 },
-            map: map,
-            title: 'Seoul'
-        })
-
-        var marker_busan = new google.maps.Marker({
-            position: { lat: 35.2103385848706, lng: 129.069113792843 },
-            map: map,
-            title: 'Busan'
-        })
     }
+
+    window.initMap = initMap;
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{api_key}}&callback=initMap" async defer></script>
 <script>
