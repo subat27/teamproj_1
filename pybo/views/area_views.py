@@ -1,9 +1,8 @@
 from flask import Flask, Blueprint, render_template, g, request, url_for
 from werkzeug.utils import redirect
-import pandas as pd
+#import pandas as pd
 from pybo.models import ConfLocal
 from pybo import db
-from dotenv import load_dotenv
 import os
 from flask import json
 
@@ -25,19 +24,25 @@ def init_data():
         db.session.add(temp_data)
     db.session.commit()
 
-
+# 뭘하는 함수인 지 ex 
 def find_data(date):
     #ConfLocal.query.order_by(ConfLocal.createDt.desc())
+
+    #날짜 입력받아서 날짜에 해당하는 값 찾아줌
+
     return ConfLocal.query.filter_by(createDt=date).all()
 
-@bp.route("show_data", methods=["GET", "POST"])
-def show_data():
-    #if request.method == "GET":
+#현황(status)라는 함수를 만들음.
+@bp.route("/domestic",methods=("GET",))
+def domestic():
 
-    if load_dotenv() :
-        api_key = os.getenv('GOOGLE_API_KEY')
-        
-        return render_template("area/test.html", api_key=api_key, covid_data=find_data('2023-08-31'))
-        
-    #return render_template("area/showArea.html", date=request.form["date"])
-    #return render_template("showArea.html", find_data())
+    #현황(국내domestic)을 연결해줌
+    return render_template("status/domestic.html")
+@bp.route("/overseas",methods=("GET",))
+def overseas():
+
+    #현황(해외domestic)을 연결해줌
+    return render_template("status/overseas.html")
+
+
+

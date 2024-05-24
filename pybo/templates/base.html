@@ -3,15 +3,20 @@
 
 <head>
     <script src="{{url_for('static', filename='js/sidebars/color-modes.js')}}"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/sidebars/sidebars.css')}}">
+    
     {% block head %}
     
     {% endblock %}
 </head>
+
+
+
 
 <body>
     <main class="d-flex flex-nowrap">
@@ -25,24 +30,39 @@
                 <li class="nav-item">
                     <!-- class="active" -> 현재 선택된 게시판을 표시해주는 역할 -->
                     <a href="#" class="nav-link active">
-                        Home
+                        홈페이지  
+                    </a>
+                </li>
+            <body>
+                
+            
+                
+                <!--templates에 있는 status에다 국내 해외링크 연결할 예정-->
+                <!--현황을 누르면 국내 해외 나올수있게 구현-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link text-white dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      현황
+                    </a>
+                    <ul class="dropdown-menu" >
+                        <button class="nav-link text-white" id="domestic">국내</button>
+                        <button class="nav-link text-white" id="overseas">해외</button>
+                    </ul>
+                  </li>
+            </body>       
+                    
+                
+
+                <li class="nav-item" >
+                    <a href="#" class="nav-link text-white">
+                        <button class="nav-link text-white" onclick="">비교</button>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link text-white">
-                        현황
+                        <button class="nav-link text-white" onclick="">분석</button>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
-                        비교
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
-                        분석
-                    </a>
-                </li>
+
             </ul>
             <hr>
         </div>
@@ -63,6 +83,24 @@
     <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/sidebars/sidebars.js')}}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>    
+    
+
+
+    
+    <script>
+        $(document).ready(function(){
+            // 국내버튼을 누르면 domestic으로 가게해주는 jQuery
+            $("#domestic").click(function(){
+                location.href="/area/domestic";
+            });
+
+            // 해외버튼을 누르면 domestic으로 가게해주는 jQuery
+            $("#overseas").click(function(){
+                location.href="/area/overseas";
+            });
+        });
+    </script>
+    
 </body>
 
 </html>
