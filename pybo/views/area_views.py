@@ -15,15 +15,22 @@ bp = Blueprint("area", __name__, url_prefix="/area")
 
 def find_data(date):
     #ConfLocal.query.order_by(ConfLocal.createDt.desc())
-    return ConfLocal.query.filter_by(createDt=date).order_by(ConfLocal.createDt.desc())
 
-@bp.route("show_data", methods=["GET", "POST"])
-def show_data():
-    engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
-    data = pd.read_sql("select * from ConfLocal where localNameEn='Gwangju'", engine)
+    #날짜 입력받아서 날짜에 해당하는 값 찾아줌
 
-    saveFile(data, "Gwangju")
+    return ConfLocal.query.filter_by(createDt=date).all()
 
-    return render_template("area/showArea.html", datasets=find_data("2020-02-08"))
+#현황(status)라는 함수를 만들음.
+@bp.route("/domestic",methods=("GET",))
+def domestic():
+
+    #현황(국내domestic)을 연결해줌
+    return render_template("status/domestic.html")
+@bp.route("/overseas",methods=("GET",))
+def overseas():
+
+    #현황(해외domestic)을 연결해줌
+    return render_template("status/overseas.html")
+
 
 
