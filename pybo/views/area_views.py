@@ -41,3 +41,7 @@ def show_data():
         
     #return render_template("area/showArea.html", date=request.form["date"])
     #return render_template("showArea.html", find_data())
+
+@bp.route("test")
+def test():
+    return render_template("area/showArea.html")
