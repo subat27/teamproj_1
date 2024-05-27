@@ -77,30 +77,12 @@
         </div>
     </main>
 
-    {% block script %}
-
-    {% endblock %}
     <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/sidebars/sidebars.js')}}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>    
-    
+    {% block script %}
 
-
-    
-    <script>
-        $(document).ready(function(){
-            // 국내버튼을 누르면 domestic으로 가게해주는 jQuery
-            $("#domestic").click(function(){
-                location.href="/area/domestic";
-            });
-
-            // 해외버튼을 누르면 domestic으로 가게해주는 jQuery
-            $("#overseas").click(function(){
-                location.href="/area/overseas";
-            });
-        });
-    </script>
-    
+    {% endblock %}
 </body>
 
 </html>
