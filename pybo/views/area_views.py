@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, g, request, url_for
 from werkzeug.utils import redirect
-import pandas as pd
+#import pandas as pd
 from pybo.models import ConfLocal
 from pybo import db
 import os
