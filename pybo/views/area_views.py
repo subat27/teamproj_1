@@ -1,10 +1,16 @@
 from flask import Flask, Blueprint, render_template, g, request, url_for
 from werkzeug.utils import redirect
-#import pandas as pd
+import pandas as pd
 from pybo.models import ConfLocal
 from pybo import db
 import os
 from flask import json
+from datetime import datetime
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import mpld3
+plt.ioff()
 
 bp = Blueprint("area", __name__, url_prefix="/area")
 
