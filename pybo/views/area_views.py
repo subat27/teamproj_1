@@ -10,6 +10,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import mpld3
+import matplotlib as mpl
 plt.ioff()
 
 bp = Blueprint("area", __name__, url_prefix="/area")
