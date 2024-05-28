@@ -3,7 +3,6 @@ from werkzeug.utils import redirect
 import pandas as pd
 from pybo.models import ConfLocal
 from pybo import db
-from dotenv import load_dotenv
 import os
 from flask import json
 
@@ -32,12 +31,4 @@ def find_data(date):
 
 @bp.route("show_data", methods=["GET", "POST"])
 def show_data():
-    #if request.method == "GET":
-
-    if load_dotenv() :
-        api_key = os.getenv('GOOGLE_API_KEY')
-        
-        return render_template("area/test.html", api_key=api_key, covid_data=find_data('2023-08-31'))
-        
-    #return render_template("area/showArea.html", date=request.form["date"])
-    #return render_template("showArea.html", find_data())
+    return ""

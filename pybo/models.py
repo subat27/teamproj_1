@@ -17,5 +17,13 @@ class ConfLocal(db.Model):
     localName = db.Column(db.String(20), primary_key=True)
     localNameEn = db.Column(db.String(30))
     confCase = db.Column(db.Integer)
-    incDec = db.Column(db.Integer)
+    deathCnt = db.Column(db.Integer)
+
+
+class ConfGlobal(db.Model):
+    createDt = db.Column(db.String(20), primary_key=True)
+    ageArea = db.Column(db.String(20), primary_key=True)
+    gender = db.Column(db.String(20), primary_key=True)
+    nation = db.Column(db.String(30))
+    confCase = db.Column(db.Integer)
     deathCnt = db.Column(db.Integer)
