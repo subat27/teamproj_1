@@ -3,3 +3,8 @@ a {
     text-decoration-line: none;
     color:black;
   }
+/*이미지확대*/  
+img:hover{
+    height: 400px;
+    width: 400px;
+}
