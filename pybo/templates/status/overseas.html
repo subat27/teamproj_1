@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block contents %}
+
+<body>
+    <!--해외 static에 있는 css적용 및 링크-->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/status.css')}}">
+    <a href="/area/overseas"><h1>해외</h1></a>
+    <!--검색창-->
+                                                          <!--**진짜문법2 적용아직안됬음**-->
+    <form class="d-flex" role="search" class="search" action="/area/search/{{country}}" method="post">
+      <input class="input-group-search" type="text" placeholder="검색" aria-label="Search" name="search">
+      <button class="btn btn-outline-success" type="submit">검색</button>
+    </form>
+
+
+    
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                                      <!--캐나다 링크-->
+                <a class="nav-link" href="/area/canada"><img src="/static/img/캐나다.png"><br>
+                <p style="text-align: center;">캐나다</p> 
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/area/japan" target="_blank"><img src="/static/img/일본.png"><br>
+                  <p style="text-align: center;">일본</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/area/"><img src="/static/img/미국.png"><br>
+                  <p style="text-align: center;">미국</p>
+                </a>
+              </li>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="container p-3 ">
+        
+    </div>
+</body>
+
+
+{% endblock %}

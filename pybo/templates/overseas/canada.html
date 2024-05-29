@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/status.css')}}">
+<a href="/area/overseas"><h1>해외</h1></a>
+{{search}}
+
+{% for x in search %}
+    {{x}}<br>
+{% endfor %}
+
+{% endblock %}

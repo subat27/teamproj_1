@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+<!-- header -->
+{% block head %}
+
+
+{% endblock %}
+
+
+<!-- contents -->
+{% block contents %}
+
+<table>
+    <thead>
+        <tr>
+            <th>기준일</th>
+            <th>지역명</th>
+            <th>지역명(영문)</th>
+            <th>확진자수</th>
+            <th>사망자수</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for data in datasets %}
+        <tr>
+            <td>{{data.createDt}}</td>
+            <td>{{data.localName}}</td>
+            <td>{{data.localNameEn}}</td>
+            <td>{{data.confCase}}</td>
+            <td>{{data.deathCnt}}</td>
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+<div class="object-container">
+    <object type="text/html" data="{{url_for('static', filename='charts/testA.html')}}">
+    <div class="object-overlay"></div>
+    </object>
+</div>
+
+
+<iframe id="tes" type="text/html" src="../static/charts/gd_park.html" width="250"
+height="200">
+    <p>b 없음</p>
+</iframe>
+</div>
+
+{% endblock %}
+
+<!-- java script -->
+{% block script %}
+<script>
+    document.querySelector('.object-overlay').addEventListener('click', function() {
+        console.log("test");
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+
+
+<div class="col-md-4">
+    <label for="state" class="form-label">나라찾기</label>
+    <div class="input-group">
+    
+    <select class="form-select" id="state" required="">
+      <option value="" class="nav-item dropdown">선택</option>
+      <option value="">일본</option>
+      <option value="">미국</option>
+      <option value="">영국</option>
+      <option value="">캐나다</option>
+      <option value="">오스트레일리아</option>
+      <option value="">독일</option>
+      <option value="">이스라엘</option>
+      <option value="">맥시코</option>
+      <option value="">네덜란드</option>
+      <option value="">스페인</option>
+      <option value="">대만</option>
+    </select>
+    <button class="btn btn-secondary">검색</button>
+     </div>
+    <div class="invalid-feedback">
+      Please provide a valid state.
+    </div>
+  </div>
+  
+{% endblock %}
