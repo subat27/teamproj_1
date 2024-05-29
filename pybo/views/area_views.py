@@ -62,9 +62,9 @@ def search(country_id):
 @bp.route("show_data", methods=["GET", "POST"])
 def show_data():
     engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
-    data = pd.read_sql("select * from ConfLocal where localNameEn='Gwangju'", engine)
+    data = pd.read_sql("select * from ConfLocal", engine)
 
-    saveFile(data, "Gwangju")
+    saveFile(data, "local_data")
 
     return render_template("area/showArea.html", datasets=find_data("2020-02-08"))
 

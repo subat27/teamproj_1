@@ -132,13 +132,14 @@ def saveFile(df, area):
     path = path.replace("\\", "/")
     df['createDt'] = pd.to_datetime(df['createDt'])
     if not checkFile(path):
-        fig = plt.figure(figsize=(8, 4), layout='constrained')
-        plt.plot(df['createDt'], df['confCase'], label=area)
-        plt.xlabel('등록일시')
-        plt.ylabel('확진자수')
-        plt.legend()
+        fig = plt.figure(figsize=(13, 8), layout='constrained')
+        for localName in df["localName"].unique():
+            temp_df = df[df["localName"]==localName]
+            plt.plot(temp_df['createDt'], temp_df['confCase'], label=localName)
+            plt.xlabel('등록일시')
+            plt.ylabel('확진자수')
+            plt.legend()
         plt.savefig(path)
-
     plt.close()
     idx = path.find("/static/charts")
 
