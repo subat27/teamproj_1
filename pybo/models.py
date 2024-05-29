@@ -19,3 +19,7 @@ class ConfLocal(db.Model):
     confCase = db.Column(db.Integer)
     incDec = db.Column(db.Integer)
     deathCnt = db.Column(db.Integer)
+
+class Country(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
