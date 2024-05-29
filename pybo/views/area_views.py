@@ -33,8 +33,8 @@ def domestic():
 
 @bp.route("/overseas",methods=("GET",))
 def overseas():
-
     #현황(해외domestic)을 연결해줌
+
     return render_template("status/overseas.html")
 
 @bp.route("/canada", methods=("GET",))

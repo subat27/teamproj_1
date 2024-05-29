@@ -3,6 +3,10 @@
 {% block contents %}
 <link rel="stylesheet" href="{{url_for('static', filename='css/status.css')}}">
 <a href="/area/overseas"><h1>해외</h1></a>
-<h1>캐나다</h1>
+{{search}}
+
+{% for x in search %}
+    {{x}}<br>
+{% endfor %}
 
 {% endblock %}
