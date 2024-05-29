@@ -39,7 +39,7 @@ class ConfGlobal(db.Model):
     nation = db.Column(db.String(30))
     confCase = db.Column(db.Integer)
     deathCnt = db.Column(db.Integer)
-    
+
 class Country(db.Model):
-    id=db.Column(db.String(20), primary_key=True)
-    Name=db.Column(db.String(20), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)

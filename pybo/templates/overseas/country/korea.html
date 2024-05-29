@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+
+<form method="post">
+    <h1>{{country[0].name}}</h1>
+    <img src="/static/img/{{country[0].name}}.png" width="1000" height="700">
+</form>
+
+{% endblock %}
