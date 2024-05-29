@@ -18,6 +18,8 @@ def init_data():
     df = pd.read_csv("pybo\static\data\covid_data_korea_local.csv")
     
     covid_data_local = df[['gubun', 'deathCnt', 'defCnt', 'stdDay', 'incDec', 'gubunEn']].loc[(df["gubun"]!="합계")&(df["gubun"]!="검역")].drop_duplicates(subset=["gubun", "stdDay"]).reset_index().drop(columns=["index"])
+    
+
 
     for x in covid_data_local.index:
         temp_data =ConfLocal(localName=covid_data_local.iloc[x, 0],
