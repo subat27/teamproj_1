@@ -58,3 +58,9 @@ def show_data():
     return render_template("area/showArea.html", datasets=find_data("2020-02-08"))
 
 
+
+@bp.route("/test")
+def test():
+    return render_template("area/test.html")
+
+
