@@ -5,6 +5,13 @@ from pybo.models import ConfLocal
 from pybo import db
 import os
 from flask import json
+from datetime import datetime
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import mpld3
+import matplotlib as mpl
+plt.ioff()
 
 bp = Blueprint("area", __name__, url_prefix="/area")
 
