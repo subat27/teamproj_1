@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+  const ctx = document.getElementById('myChart').getContext('2d');
+
+  const xData = JSON.parse('{{ data | tojson | safe }}');
+  // const yData = JSON.parse('{{ yData | tojson | safe }}');
+
+  console.log(typeof(xData))
+
+  // const mychart = new Chart(ctx, {
+  //   type: 'line',
+  //   data: {
+  //     labels: xData,
+  //     datasets: [{
+  //       label: 'ConfCase',
+  //       data: yData,
+  //       borderWidth: 1,
+  //       fill: false
+  //     }]
+  //   },
+  //   options: {
+  //     scales: {
+  //       x: {
+  //         title: {
+  //           display: true,
+  //           text: 'Date'
+  //         }
+  //       },
+  //       y: {
+  //         beginAtZero: true,
+  //         title: {
+  //           display: true,
+  //           text: 'ConfCase'
+  //         }
+  //       }
+  //     }
+  //   }
+  // });
+</script>
+{% endblock %}
