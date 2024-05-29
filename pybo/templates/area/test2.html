@@ -15,40 +15,59 @@
 <script>
 
   const ctx = document.getElementById('myChart').getContext('2d');
+  const data = JSON.parse('{{ data | tojson | safe }}');
 
-  const xData = JSON.parse('{{ data | tojson | safe }}');
-  // const yData = JSON.parse('{{ yData | tojson | safe }}');
+  var datasetsByAge = {};
 
-  console.log(typeof(xData))
+  data.forEach(function (item) {
+    // 연령대별 데이터셋 생성
+    if (!datasetsByAge[item.ageArea]) {
+      datasetsByAge[item.ageArea] = {
+        label: item.ageArea,
+        borderColor: getRandomColor(),
+        data: [],
+        fill: false
+      };
+    }
 
-  // const mychart = new Chart(ctx, {
-  //   type: 'line',
-  //   data: {
-  //     labels: xData,
-  //     datasets: [{
-  //       label: 'ConfCase',
-  //       data: yData,
-  //       borderWidth: 1,
-  //       fill: false
-  //     }]
-  //   },
-  //   options: {
-  //     scales: {
-  //       x: {
-  //         title: {
-  //           display: true,
-  //           text: 'Date'
-  //         }
-  //       },
-  //       y: {
-  //         beginAtZero: true,
-  //         title: {
-  //           display: true,
-  //           text: 'ConfCase'
-  //         }
-  //       }
-  //     }
-  //   }
-  // });
+    // 데이터셋에 데이터 추가
+    datasetsByAge[item.ageArea].data.push({ x: item.createDt, y: item.confCase });
+  });
+
+  // 각 연령대에 대한 데이터셋 배열 생성
+  var datasets = Object.values(datasetsByAge);
+
+  function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  const mychart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: datasets
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'createDt'
+          }
+        }],
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'confCase'
+          }
+        }]
+      }
+    }
+  });
+
 </script>
 {% endblock %}

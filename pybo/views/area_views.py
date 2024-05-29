@@ -139,6 +139,11 @@ def create_geo_data():
 def test2():
     createDtList = ConfAge.getColumnList(db.session)
     print(type(createDtList))
-    print(type(createDtList[0]))
+    print(createDtList[0])
+    print(createDtList[3])
+    print(type(createDtList[0]['ageArea']))
+    print(type(createDtList[0]['confCase']))
+    print(type(createDtList[0]['createDt']))
+    print(type(createDtList[0]['deathCnt']))
 
-    return ""
+    return render_template("area/test2.html", data=createDtList)

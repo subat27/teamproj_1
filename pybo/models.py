@@ -11,8 +11,20 @@ class ConfAge(db.Model):
 
     @classmethod
     def getColumnList(cls, session):
-        results = session.query(cls.createDt, cls.ageArea, cls.confCase, cls.deathCnt).all()
-        return [row.__dict__ for row in results]
+        results = []
+
+        for x in session.query(cls).all():
+            temp_dict = x.__dict__
+            
+            for key in temp_dict.keys():
+                if type(temp_dict[key]) is bytes:
+                    temp_dict[key] = int.from_bytes(temp_dict[key], byteorder="little")
+            
+            temp_dict.pop('_sa_instance_state')
+            results.append(temp_dict)
+
+        return results
+#        return [row.__dict__ for row in results]
 
     
 class ConfGender(db.Model):
