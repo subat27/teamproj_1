@@ -4,16 +4,17 @@ from pybo.models import ConfLocal, ConfAge, ConfGender
 from pybo import db
 from flask import json
 from datetime import datetime
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import mpld3
-plt.ioff()
 from .main_views import saveFile
-from datetime import datetime
 from sqlalchemy import create_engine
 
+import pandas as pd
+import os
+import matplotlib
+import matplotlib.pyplot as plt
+import mpld3
 
+matplotlib.use('Agg')
+plt.ioff()
 
 bp = Blueprint("area", __name__, url_prefix="/area")
 
@@ -21,6 +22,7 @@ bp = Blueprint("area", __name__, url_prefix="/area")
 def find_data(date):
     #ConfLocal.query.order_by(ConfLocal.createDt.desc())
     return ConfLocal.query.filter_by(createDt=date).order_by(ConfLocal.createDt.desc())
+
 
 #현황(status)라는 함수를 만들음.
 @bp.route("/domestic",methods=("GET",))
