@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, g, request, url_for
 from werkzeug.utils import redirect
-#import pandas as pd
+import pandas as pd
 from pybo.models import ConfLocal
 from pybo import db
 import os
@@ -31,7 +31,7 @@ def find_data(date):
     #날짜 입력받아서 날짜에 해당하는 값 찾아줌
 
     return ConfLocal.query.filter_by(createDt=date).all()
-
+#======================안영호 추가
 #현황(status)라는 함수를 만들음.
 @bp.route("/domestic",methods=("GET",))
 def domestic():
@@ -40,13 +40,21 @@ def domestic():
     return render_template("status/domestic.html")
 @bp.route("/overseas",methods=("GET",))
 def overseas():
-
     #현황(해외domestic)을 연결해줌
+
     return render_template("status/overseas.html")
 
 @bp.route("/canada", methods=("GET",))
 def canada():
     return render_template("overseas/canada.html")
-
-
+                   
+                   #나라 변수 설정 아직 적용안됨
+@bp.route("/search/<country_id>",methods=("POST",))
+def search(country_id):
+    search = request.form["search"]
+    country=db.query.get(country_id)
+    
+                                                #글자를 하나씩나눌수있음
+    return render_template("overseas/canada.html", search=list(search), country=country )
+#=========================안영호추가
 
