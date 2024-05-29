@@ -22,61 +22,106 @@
     {% block head %}
     
     {% endblock %}
-</head>
+  </head>
+  <body>
+   
+<!-- Header -->
+<div class="container">
+  <header class="border-bottom lh-1 py-3">
+    <div class="row flex-nowrap justify-content-between align-items-center">
+
+      <div class="col-4 pt-1">
+        <a class="link-secondary" href="#">Covid-19</a>
+      </div>
+
+      <div class="col-4 text-center">
+        <!-- 홈페이지로 이동 -->
+        <a class="blog-header-logo text-body-emphasis text-decoration-none" href="#">Large</a>
+      </div>
+
+      <div class="col-4 d-flex justify-content-end align-items-center">
+        <a class="link-secondary" href="#" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
+        </a>
+        <a class="btn btn-sm btn-outline-secondary" href="#">Sign up</a>
+      </div>
+
+    </div>
+  </header>
+
+  <div class="nav-scroller py-1 mb-3 border-bottom">
+    <nav class="nav nav-underline justify-content-between">
+      <!-- 추후에 a태그에서 dropdown 방식으로 변경-->
+      <a class="nav-item nav-link link-body-emphasis active" href="#">국내현황</a>
+      <a class="nav-item nav-link link-body-emphasis active" href="#">해외현황</a>
+      <a class="nav-item nav-link link-body-emphasis" href="#">비교</a>
+      <a class="nav-item nav-link link-body-emphasis" href="#">분석</a>
+
+      <!-- dropdown 방식으로 만들어놓은 부분 반영-->
+      <li class="nav-item dropdown">
+      <a class="nav-link text-white dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">현황</a>
+        <ul class="dropdown-menu" >
+          <button class="nav-link text-white container" style="width:80%" id="domestic">국내</button>
+          <button class="nav-link text-white" id="overseas">해외</button>
+        </ul>
+      </li>
+    </nav>
+  </div>
+</div>
 
 
+<!-- Contents -->
+<main class="container">
 
+  <!-- Logo -->
+  <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
+    <div class="col-lg-6 px-0">
+      <h1 class="display-4 fst-italic">Title of a longer featured blog post</h1>
+      <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
+      <p class="lead mb-0"><a href="#" class="text-body-emphasis fw-bold">Continue reading...</a></p>
+    </div>
+  </div>
 
-<body>
-    <main class="d-flex flex-nowrap">
-        <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                <span class="fs-4">Covid-19</span> <!-- 홈페이지로 이동하는 버튼 -->
-            </a>
-            <hr>
-            <!-- 게시판 -->
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <!-- class="active" -> 현재 선택된 게시판을 표시해주는 역할 -->
-                    <a href="#" class="nav-link active">
-                        홈페이지  
-                    </a>
-                </li>
-            <body>
-                
-            
-                
-                <!--templates에 있는 status에다 국내 해외링크 연결할 예정-->
-                <!--현황을 누르면 국내 해외 나올수있게 구현-->
-                <li class="nav-item dropdown">
-                    <button class="nav-link text-white dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
-                        현황
-                      </button>
-                        <div class="collapse show" id="home-collapse">
-                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                <button class="nav-link text-white" id="domestic">국내</button>
-                                <button class="nav-link text-white" id="overseas2">해외</button>
-                             </ul>
-                        </div>
-                  </li>
-            </body>       
-                    
-                
-
-                <li class="nav-item" >
-                    <a href="/overseas/graph" class="nav-link text-white">
-                        <button class="nav-link text-white" id="overseas">비교</button>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
-                        <button class="nav-link text-white">분석</button>
-                    </a>
-                </li>
-
-            </ul>
-            <hr>
+  <!-- Charts : 추후 이 부분 반복문 사용해서 구현-->
+  <div class="row mb-2">
+    <!-- 이부분에 블럭 지정-->
+    <!-- Chart1 -->
+    <div class="col-md-6">
+      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+          <strong class="d-inline-block mb-2 text-primary-emphasis">World</strong>
+          <h3 class="mb-0">Featured post</h3>
+          <div class="mb-1 text-body-secondary">Nov 12</div>
+          <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="icon-link gap-1 icon-link-hover stretched-link">
+            Continue reading
+            <svg class="bi"><use xlink:href="#chevron-right"/></svg>
+          </a>
         </div>
+        <div class="col-auto d-none d-lg-block">
+          <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart2 -->
+    <div class="col-md-6">
+      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+          <strong class="d-inline-block mb-2 text-success-emphasis">Design</strong>
+          <h3 class="mb-0">Post title</h3>
+          <div class="mb-1 text-body-secondary">Nov 11</div>
+          <p class="mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="icon-link gap-1 icon-link-hover stretched-link">
+            Continue reading
+            <svg class="bi"><use xlink:href="#chevron-right"/></svg>
+          </a>
+        </div>
+        <div class="col-auto d-none d-lg-block">
+          <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+        </div>
+      </div>
+    </div>
 
     {% block charts %}
                 
@@ -106,14 +151,8 @@
 
     <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/sidebars/sidebars.js')}}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    {% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>    
 
-    {% endblock %}
-    
-
-
-    
     <script>
         $(document).ready(function(){
             // 국내버튼을 누르면 domestic으로 가게해주는 jQuery
@@ -127,7 +166,8 @@
             });
         });
     </script>
-    
+    {% block script %}
+    {% endblock %}
 </body>
 
 </html>
