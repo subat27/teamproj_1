@@ -18,6 +18,28 @@ def overseas_graph():
     
     return render_template("overseas/overseas_graph.html", country=country, filepath_date=filepath_date)
 
+@bp.route("/hangeul")
+def hangeul():
+    df1 = pd.read_csv("pybo\static\data\COVID19-global.csv")
+    df2 = pd.read_csv("pybo\static\data\Country_code.csv")
+    merge_df = pd.merge(df1, df2, how="inner", left_on="Country_code", right_on="code")
+    df3 = merge_df.loc[:, ['Country_code', 'Country', 'name(kr)', 'name(en)', 'code']]
+    #code 같은 것만 df3에 저장되게
+    df3 = df3.drop_duplicates(['Country'])
+
+    # 240국가를 db에 저장해주는 코드 ######
+    for idx in df3.reset_index().drop(columns=["index"]).index:
+        name_en = df3.iloc[idx, 1]
+        name_kr = df3.iloc[idx, 2]
+
+        country = Country(name=name_en, hangeul=name_kr)
+
+        db.session.add(country)
+    db.session.commit()
+
+    return redirect("/")
+
+
 @bp.route("/detail/<country>")
 def detail(country):
     countryData = Country.query.filter_by(name=country).get()
