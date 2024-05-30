@@ -7,21 +7,10 @@
 
 {% block contents %}
 
-<a href="/area/overseas">
-  <h1>해외</h1>
-</a>
-
-<!--검색창-->
-<!-- <form class="d-flex" role="search" class="search" action="/area/search/{{country}}" method="post">
-  <input class="input-group-search" type="text" placeholder="검색" aria-label="Search" name="search">
-  <button class="btn btn-outline-success" type="submit">검색</button>
-</form> -->
-
 <div class="col-md-4">
-  <!-- <label for="state" class="form-label">나라찾기</label> -->
   <div class="input-group">
-    <select class="form-select" id="state" required="">
-      <option value="" class="nav-item dropdown">선택</option>
+    <select class="form-select" id="state" >
+      <option value="">국가선택</option>
       {% for country in countries %}
       <option value="{{country.name}}">{{ country.hangeul }}</option>
       {% endfor %}

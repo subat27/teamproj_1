@@ -29,9 +29,15 @@ def find_data(date):
     return ConfLocal.query.filter_by(createDt=date).order_by(ConfLocal.createDt.desc())
 
 # 국내 현황 페이지 연결
-@bp.route("/domestic",methods=("GET",))
-def domestic():
-    return render_template("status/domestic.html")
+@bp.route("/domestic/<int:option>",methods=("GET",))
+def domestic(option):
+    if option == 3:
+        return render_template("status/domestic.html", map="/static/data/map.html")
+    elif option == 2:
+        filename = "age"
+    else :        
+        filename = "gender"
+    return render_template("status/domestic.html", gubun=filename)
 
 # 해외 현황 페이지 연결
 @bp.route("/overseas",methods=("GET",))
@@ -77,6 +83,7 @@ def covid_data_by_date(df1, df2, date):
     return pd.merge(df1, df2, left_on="CTP_ENG_NM", right_on="gubunEn", how="inner").drop(columns="gubunEn")
 
 
+# 국내 시도별 지도 생성
 @bp.route("create_geo_data", methods=["GET"])
 def create_geo_data():
     with open("pybo\static\data\sido_korea.geojson", "r", encoding="utf-8") as file:

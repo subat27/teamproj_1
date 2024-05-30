@@ -25,8 +25,10 @@ def hangeul():
     df2 = pd.read_csv("pybo\static\data\Country_code.csv")
     merge_df = pd.merge(df1, df2, how="inner", left_on="Country_code", right_on="code")
     df3 = merge_df.loc[:, ['Country_code', 'Country', 'name(kr)', 'name(en)', 'code']]
+    filter = df3['Country_code']==df3['code']
+    df3[filter]
     #code 같은 것만 df3에 저장되게
-    df3 = df3.drop_duplicates(['Country'])
+    df3 = df3[filter].drop_duplicates(['Country'])
 
     # 240국가를 db에 저장해주는 코드 ######
     for idx in df3.reset_index().drop(columns=["index"]).index:
