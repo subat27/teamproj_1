@@ -29,7 +29,7 @@ def find_data(date):
     return ConfLocal.query.filter_by(createDt=date).order_by(ConfLocal.createDt.desc())
 
 # 국내 현황 페이지 연결
-@bp.route("/domestic/<int:option>",methods=("GET",))
+@bp.route("/domestic/<int:option>")
 def domestic(option):
     if option == 3:
         return render_template("status/domestic.html", map="/static/data/map.html")
@@ -40,9 +40,12 @@ def domestic(option):
     return render_template("status/domestic.html", gubun=filename)
 
 # 해외 현황 페이지 연결
-@bp.route("/overseas",methods=("GET",))
-def overseas():
-    return render_template("status/overseas.html", countries=Country.query.all())
+@bp.route("/overseas/<int:option>")
+def overseas(option):
+    if option==1 :
+        return render_template("status/overseas.html", countries=Country.query.all())
+    else :
+        return render_template("status/overseas.html", map="/static/data/global_map.html")
 
 
 @bp.route("show_data", methods=["GET", "POST"])
@@ -53,20 +56,6 @@ def show_data():
     saveFile(data, "local_data")
 
     return render_template("area/showArea.html", datasets=find_data("2020-02-08"))
-
-
-# 기능 테스트용 코드
-@bp.route("/test")
-def test():
-    return render_template("area/test.html")
-
-@bp.route("test2")
-def test2():
-    createDtList = ConfAge.getColumnList(db.session)
-    print(type(createDtList))
-    print(type(createDtList[0]))
-
-    return ""
 
 # 지역별 정보를 화면에 출력해주는 기능
 @bp.route("show_geo_data", methods=["GET"])
@@ -198,3 +187,19 @@ def covid_data_by_date_global(df1, df2, date):
     df2 = df2[filter] # 특정날짜 df
     df2 = df2[['Country', 'Cumulative_cases']]
     return pd.merge(df1, df2, left_on='COUNTRY', right_on="Country", how="inner").drop(columns="COUNTRY")
+
+
+
+
+# 기능 테스트용 코드
+@bp.route("/test")
+def test():
+    return render_template("area/test.html")
+
+@bp.route("test2")
+def test2():
+    createDtList = ConfAge.getColumnList(db.session)
+    print(type(createDtList))
+    print(type(createDtList[0]))
+
+    return render_template("area/test2.html", datasets=createDtList)
