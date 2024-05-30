@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 
 bp = Blueprint("overseas", __name__, url_prefix="/overseas")
 
+# 해외의 코로나 데이터를 출력하기 위해 데이터를 수정하는 코드
 
 @bp.route("/graph")
 def overseas_graph():
@@ -55,7 +56,7 @@ def db_input2():
     return redirect("/")
 
 # 해외 데이터를 이미지화한 파일을 저장하는 함수
-@bp.route("init")
+@bp.route("createImgFile")
 def init_overseas_data():
     df = pd.read_csv("pybo\static\data\COVID19-global.csv")
 
