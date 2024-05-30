@@ -8,74 +8,44 @@
 {% block contents %}
 
 
-     <h1>국내</h1>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#" class="btn">홈페이지</a>
-          
-          <!--여기부터-->
-          <div class="col-md-4">
-            <label for="state" class="form-label">나라찾기</label>
-            <div class="input-group">
-            
-            <select class="form-select" id="state" required="">
-              <option value="" class="nav-item dropdown">선택</option>
-              <option>일본</option>
-              <option>미국</option>
-              <option>영국</option>
-              <option>캐나다</option>
-              <option>오스트레일리아</option>
-              <option>사우디아라비아</option>
-              <option>브라질</option>
-              <option>영국</option>
-              <option>아르헨티나</option>
-              <option>중국</option>
-              <option>러시아</option>
-            </select>
-            
-             </div>
-            <div class="invalid-feedback">
-              Please provide a valid state.
-            </div>
-          </div>
-          
+<h1>국내</h1>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" class="btn">홈페이지</a>
 
-          <!--여기까지 지우면됨-->
-          <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="#">성별</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">연령별</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">지역별</a>
-              </li>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-      <img src="/static/img/대한민국.png" alt="" id="image">
-    <div class="container p-3 ">
-
-        
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#">성별</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">연령별</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">지역별</a>
+        </li>
+        </li>
+      </ul>
     </div>
+  </div>
+</nav>
+<img src="/static/img/20240530/Republic of Korea.png" alt="" id="image">
+<div class="container p-3 ">
+
+
+</div>
 
 {% endblock %}
 
 {% block script %}
 <script>
-  $(document).ready(function(){
-    $("#state").change(function(){
-      let state ="/static/img/"+$(this).val()+".png";
-      $("#image").attr("src",state);
-      $("#image").attr("alt",state);
+  $(document).ready(function () {
+    $("#state").change(function () {
+      let state = "/static/img/" + $(this).val() + ".png";
+      $("#image").attr("src", state);
+      $("#image").attr("alt", state);
     });
   });
 
 </script>
 {% endblock %}
-
-
