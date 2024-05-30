@@ -66,7 +66,10 @@ def show_geo_data():
 def covid_data_by_date(df1, df2, date):
     # df1: geo_data
     dateStr = datetime.strptime(date, "%Y-%m-%d")
-    filter = df2["stdDay"]==dateStr
+    if dateStr > df2["stdDay"].max():
+        filter = df2["stdDay"]==df2["stdDay"].max()
+    else :
+        filter = df2["stdDay"]==dateStr
     df2 = df2[filter] # 특정날짜 df
     df2 = df2[['gubunEn', 'deathCnt', 'defCnt', 'gubun']]
     return pd.merge(df1, df2, left_on="CTP_ENG_NM", right_on="gubunEn", how="inner").drop(columns="gubunEn")
@@ -84,7 +87,7 @@ def create_geo_data():
 
     temp = geopandas.GeoDataFrame.from_features(json.loads(geo), crs="OGC:CRS84")
     covid_df_2["stdDay"] = pd.to_datetime(covid_df_2["stdDay"])
-    temp2 = covid_data_by_date(temp, covid_df_2, "2021-05-30")
+    temp2 = covid_data_by_date(temp, covid_df_2, "2024-05-31")
 
     colormap = branca.colormap.LinearColormap(
         vmin=temp2["defCnt"].quantile(0.0),
@@ -94,6 +97,11 @@ def create_geo_data():
     )
 
     covid_map = folium.Map(location=[36.3, 128.1], zoom_start=7, zoom_control=True, control_scale=True)
+
+    my_js = '''
+    console.log('working perfectly')
+    '''
+    covid_map.get_root().script.add_child(branca.element.Element(my_js))
 
     popup = folium.GeoJsonPopup(
         fields=["gubun", "defCnt"],
