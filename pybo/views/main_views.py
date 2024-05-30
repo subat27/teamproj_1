@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect
 import pandas as pd
 from pybo.models import ConfAge, ConfGender, ConfLocal
 from pybo import db
@@ -101,29 +101,10 @@ def init_data():
     
     db.session.commit()
 
-    return "완료오"
+    return redirect("/")
 
 
 def saveFile(df, area):
-    # # html 파일로 저장
-    # filename = area + ".html"
-    # upload_path = makedirectory()
-
-    # path = os.path.join(upload_path, filename)
-    # path = path.replace("\\", "/")
-    
-    # if not checkFile(path):
-    #     temp_df = df.loc[df["시도명(영어)"]==area]
-
-    #     fig = plt.figure(figsize=(8, 4), layout='constrained')
-    #     plt.plot(temp_df['기준일자'], temp_df['확진자수'])
-    #     plt.xlabel('기준일자')
-    #     plt.ylabel('확진자수')
-    #     html_graph = mpld3.fig_to_html(fig)
-
-    #     with open(path, "w") as f:
-    #         f.write(html_graph)
-
     # jpg 파일로 저장
     filename = area + ".jpg"
     upload_path = makedirectory()

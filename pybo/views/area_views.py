@@ -27,30 +27,25 @@ from sqlalchemy import create_engine
 
 bp = Blueprint("area", __name__, url_prefix="/area")
 
-# 뭘하는 함수인 지 ex 
 def find_data(date):
-    #ConfLocal.query.order_by(ConfLocal.createDt.desc())
     return ConfLocal.query.filter_by(createDt=date).order_by(ConfLocal.createDt.desc())
 
-
-#현황(status)라는 함수를 만들음.
+# 국내 현황 페이지 연결
 @bp.route("/domestic",methods=("GET",))
 def domestic():
-
-    #현황(국내domestic)을 연결해줌
     return render_template("status/domestic.html")
 
+# 해외 현황 페이지 연결
 @bp.route("/overseas",methods=("GET",))
 def overseas():
-    #현황(해외domestic)을 연결해줌
-
     return render_template("status/overseas.html")
 
+# 해외 현황 페이지 연결
 @bp.route("/canada", methods=("GET",))
 def canada():
     return render_template("overseas/canada.html")
                    
-                   #나라 변수 설정 아직 적용안됨
+#나라 변수 설정 아직 적용안됨
 @bp.route("/search/<country_id>",methods=("POST",))
 def search(country_id):
     search = request.form["search"]
