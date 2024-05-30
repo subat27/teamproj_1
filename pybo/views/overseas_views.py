@@ -76,9 +76,11 @@ def db_input2():
 
     name = request.form['name'] 
 
-    country = Country(name=name)
-    
-    for country in df1["국가"].unique():
+    # 240국가를 db에 저장해주는 코드 ######
+    for name in df1["국가"].unique():
+        print(":::::::::::::::::::")
+        print(name)
+        country = Country(name=name)
         db.session.add(country)
         db.session.commit()
     return render_template("")
