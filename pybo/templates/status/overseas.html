@@ -23,7 +23,7 @@
     <select class="form-select" id="state" required="">
       <option value="" class="nav-item dropdown">선택</option>
       {% for country in countries %}
-      <option>{{ country.name }}</option>
+      <option value="{{country.name}}">{{ country.hangeul }}</option>
       {% endfor %}
     </select>
   </div>
