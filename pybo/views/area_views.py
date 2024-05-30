@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, g, request, url_for, current_app
 from werkzeug.utils import redirect
-from pybo.models import ConfLocal, ConfAge, ConfGender
+from pybo.models import ConfLocal, ConfAge, ConfGender, Country
 from pybo import db
 from flask import json
 from datetime import datetime
@@ -8,10 +8,8 @@ from .main_views import saveFile
 from sqlalchemy import create_engine
 
 import pandas as pd
-import os
 import matplotlib
 import matplotlib.pyplot as plt
-import mpld3
 
 import folium
 import branca
@@ -24,43 +22,20 @@ from datetime import datetime
 from sqlalchemy import create_engine
 
 
-
 bp = Blueprint("area", __name__, url_prefix="/area")
 
-# 뭘하는 함수인 지 ex 
 def find_data(date):
-    #ConfLocal.query.order_by(ConfLocal.createDt.desc())
     return ConfLocal.query.filter_by(createDt=date).order_by(ConfLocal.createDt.desc())
 
-
-#현황(status)라는 함수를 만들음.
+# 국내 현황 페이지 연결
 @bp.route("/domestic",methods=("GET",))
 def domestic():
-
-    #현황(국내domestic)을 연결해줌
     return render_template("status/domestic.html")
 
+# 해외 현황 페이지 연결
 @bp.route("/overseas",methods=("GET",))
 def overseas():
-    #현황(해외domestic)을 연결해줌
-
-    return render_template("status/overseas.html")
-
-@bp.route("/canada", methods=("GET",))
-def canada():
-    return render_template("overseas/canada.html")
-                   
-                   #나라 변수 설정 아직 적용안됨
-@bp.route("/search/<country_id>",methods=("POST",))
-def search(country_id):
-    search = request.form["search"]
-    country=db.query.get(country_id)
-    
-                                                #글자를 하나씩나눌수있음
-    return render_template("overseas/canada.html", search=search, country=country )
-#=========================안영호추가
-
-
+    return render_template("status/overseas.html", countries=Country.query.all())
 
 
 @bp.route("show_data", methods=["GET", "POST"])
@@ -73,22 +48,33 @@ def show_data():
     return render_template("area/showArea.html", datasets=find_data("2020-02-08"))
 
 
-
+# 기능 테스트용 코드
 @bp.route("/test")
 def test():
     return render_template("area/test.html")
 
+@bp.route("test2")
+def test2():
+    createDtList = ConfAge.getColumnList(db.session)
+    print(type(createDtList))
+    print(type(createDtList[0]))
 
-def covid_data_by_date(df1, df2, date):
-    dateStr = datetime.strptime(date, "%Y-%m-%d")
-    filter = df2["stdDay"]==dateStr
-    df2 = df2[filter]
-    df2 = df2[['gubunEn', 'deathCnt', 'defCnt', 'gubun']]
-    return pd.merge(df1, df2, left_on="CTP_ENG_NM", right_on="gubunEn", how="inner").drop(columns="gubunEn")
+    return ""
 
+# 지역별 정보를 화면에 출력해주는 기능
 @bp.route("show_geo_data", methods=["GET"])
 def show_geo_data():
     return render_template("domestic/domestic_area.html")
+
+
+def covid_data_by_date(df1, df2, date):
+    # df1: geo_data
+    dateStr = datetime.strptime(date, "%Y-%m-%d")
+    filter = df2["stdDay"]==dateStr
+    df2 = df2[filter] # 특정날짜 df
+    df2 = df2[['gubunEn', 'deathCnt', 'defCnt', 'gubun']]
+    return pd.merge(df1, df2, left_on="CTP_ENG_NM", right_on="gubunEn", how="inner").drop(columns="gubunEn")
+
 
 @bp.route("create_geo_data", methods=["GET"])
 def create_geo_data():
@@ -140,11 +126,3 @@ def create_geo_data():
     covid_map.save("pybo/static/data/map.html")
 
     return redirect("/")
-
-@bp.route("test2")
-def test2():
-    createDtList = ConfAge.getColumnList(db.session)
-    print(type(createDtList))
-    print(type(createDtList[0]))
-
-    return ""

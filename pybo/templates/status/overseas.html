@@ -1,53 +1,47 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<!--해외 static에 있는 css적용 및 링크-->
+<link rel="stylesheet" href="{{url_for('static', filename='css/status.css')}}">
 {% endblock %}
 
 {% block contents %}
 
-<body>
-    <!--해외 static에 있는 css적용 및 링크-->
-    <link rel="stylesheet" href="{{url_for('static', filename='css/status.css')}}">
-    <a href="/area/overseas"><h1>해외</h1></a>
-    <!--검색창-->
-                                                          <!--**진짜문법2 적용아직안됬음**-->
-    <form class="d-flex" role="search" class="search" action="/area/search/{{country}}" method="post">
-      <input class="input-group-search" type="text" placeholder="검색" aria-label="Search" name="search">
-      <button class="btn btn-outline-success" type="submit">검색</button>
-    </form>
+<a href="/area/overseas">
+  <h1>해외</h1>
+</a>
 
+<!--검색창-->
+<!-- <form class="d-flex" role="search" class="search" action="/area/search/{{country}}" method="post">
+  <input class="input-group-search" type="text" placeholder="검색" aria-label="Search" name="search">
+  <button class="btn btn-outline-success" type="submit">검색</button>
+</form> -->
 
-    
+<div class="col-md-4">
+  <!-- <label for="state" class="form-label">나라찾기</label> -->
+  <div class="input-group">
+    <select class="form-select" id="state" required="">
+      <option value="" class="nav-item dropdown">선택</option>
+      {% for country in countries %}
+      <option>{{ country.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <img src="#" alt="" id="image">
+  </div>
+</div>
 
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-          <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                                      <!--캐나다 링크-->
-                <a class="nav-link" href="/area/canada"><img src="/static/img/캐나다.png"><br>
-                <p style="text-align: center;">캐나다</p> 
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/area/japan" target="_blank"><img src="/static/img/일본.png"><br>
-                  <p style="text-align: center;">일본</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/area/"><img src="/static/img/미국.png"><br>
-                  <p style="text-align: center;">미국</p>
-                </a>
-              </li>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-      <div class="container p-3 ">
-        
-    </div>
-</body>
+{% endblock %}
 
-
+{% block script %}
+<script>
+  $(document).ready(function () {
+    $("#state").change(function () {
+      let state = "/static/img/20240530/" + $(this).val() + ".png";
+      $("#image").attr("src", state);
+      $("#image").attr("alt", state);
+    });
+  });
+</script>
 {% endblock %}

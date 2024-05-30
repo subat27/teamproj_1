@@ -1,106 +1,104 @@
 from flask import Blueprint, render_template, request
+from werkzeug.utils import redirect
 from pybo.models import Country
 from pybo import db
 import pandas as pd
+from datetime import datetime
+import os
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 
 bp = Blueprint("overseas", __name__, url_prefix="/overseas")
+
 
 @bp.route("/graph")
 def overseas_graph():
     country = Country.query.all()
-    return render_template("overseas/overseas_graph.html", country=country)
+    filepath_date = datetime.now().strftime("%Y%m%d")
+    
+    return render_template("overseas/overseas_graph.html", country=country, filepath_date=filepath_date)
 
-# @bp.route("/korea")
-# def korea():
-#     return render_template("overseas/korea.html")
+@bp.route("/detail/<country>")
+def detail(country):
+    countryData = Country.query.filter_by(name=country).get()
+    return render_template("", countryData=countryData)
+
+# 국가를 입력하면 화면에 그 국가에 대한 정보가 나타나게 구현
+@bp.route("/find/<country>", methods=('GET', 'POST'))
+def db_input():
+    if request.method == "GET" :
+        return render_template("country_input.html")
+    
+    country = request.form["country"]
+    
+    return render_template("overseas/detail/" + country)
 
 
-@bp.route("/korea", methods=('Get', 'Post'))
-def korea():
-    if request.method == 'GET':
-        country =  Country.query.all()
-        return render_template("overseas/country/korea.html", country=country)
-
-    return render_template("overseas/country/korea.html")
-
-@bp.route("/japan")
-def japan():
-    return render_template("overseas/country/japan.html")
-@bp.route("/china")
-def china():
-    return render_template("overseas/country/china.html")
-@bp.route("/russia")
-def russia():
-    return render_template("overseas/country/russia.html")
-@bp.route("/canada")
-def canada():
-    return render_template("overseas/country/canada.html")
-@bp.route("/usa")
-def usa():
-    return render_template("overseas/country/usa.html")
-@bp.route("/australia")
-def australia():
-    return render_template("overseas/country/australia.html")
-@bp.route("/brazil")
-def brazil():
-    return render_template("overseas/country/brazil.html")
-@bp.route("/saudiarabia")
-def saudiarabia():
-    return render_template("overseas/country/saudiarabia.html")
-@bp.route("/argentina")
-def argentina():
-    return render_template("overseas/country/argentina.html")
-@bp.route("/unitedkingdom")
-def unitedkingdom():
-    return render_template("overseas/country/unitedkingdom.html")
-@bp.route("/congo")
-def congo():
-    return render_template("overseas/country/congo.html")
-
-@bp.route("/input2", methods=('Get', 'Post'))
+@bp.route("/initDB")
 def db_input2():
-
     df = pd.read_csv("pybo\static\data\COVID19-global.csv")
 
     df1 = df.copy()
-    df1=df1.drop(columns=df1.columns[[1, 3, 5, 6, 7]])
-
+    df1 = df1.drop(columns=df1.columns[[1, 3, 5, 6, 7]])
     df1.rename(columns={'Date_reported':'날짜',
                         'Country':'국가',
                         'New_cases':'감염자'}, inplace=True)
-
     df1["날짜"] = pd.to_datetime(df1["날짜"])
-
-    if request.method == 'GET':
-        return render_template("overseas/country_input2.html")
-
-    name = request.form['name'] 
-
+    
     # 240국가를 db에 저장해주는 코드 ######
     for name in df1["국가"].unique():
-        print(":::::::::::::::::::")
-        print(name)
         country = Country(name=name)
         db.session.add(country)
-        db.session.commit()
-    return render_template("")
 
-
-@bp.route("/input", methods=('Get', 'Post'))
-def db_input():
-
-    if request.method == 'GET':
-        return render_template("overseas/country_input.html")
- 
-    name = request.form['name'] 
-
-    country = Country(name=name)
-
-    db.session.add(country)
     db.session.commit()
- 
-    return render_template("overseas/country_input.html")
+
+    return redirect("/")
+
+# 해외 데이터를 이미지화한 파일을 저장하는 함수
+@bp.route("init")
+def init_overseas_data():
+    df = pd.read_csv("pybo\static\data\COVID19-global.csv")
+
+    df1 = df.copy()
+    df1=df1.drop(columns=df1.columns[[1, 3, 6, 7]])
+
+    df1.rename(columns={'Date_reported':'날짜',
+                        'Country':'국가',
+                        'New_cases':'신규확진자',
+                        'Cumulative_cases':'누적확진자'}, inplace=True)
+
+    df1["날짜"] = pd.to_datetime(df1["날짜"])
+       
+    for area in df1["국가"].unique():
+        saveFile(df1, area)
+
+    return redirect("/")
 
 
+def saveFile(df, area):
+    filename = area + ".png"
+    upload_path = makedirectory()
+    path = os.path.join(upload_path, filename)
+    path = path.replace("\\", "/")
 
+    filter=df["국가"]==area 
+    temp_df = df[filter]
+    temp_df.plot(x="날짜", y=["신규확진자"])
+    plt.savefig(path)
+    plt.close()
+
+    idx = path.find("/static/img")
+
+    return path[idx:]
+
+def makedirectory():
+    UPLOAD_DIR="pybo/static/img"
+    name_ymd = datetime.now().strftime("%Y%m%d")
+
+    new_dir_path = os.path.join(UPLOAD_DIR, name_ymd)
+
+    if not os.path.exists(new_dir_path):
+        os.mkdir(new_dir_path)
+
+    return new_dir_path
  
