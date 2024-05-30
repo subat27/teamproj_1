@@ -73,6 +73,12 @@ def show_data():
     return render_template("area/showArea.html", datasets=find_data("2020-02-08"))
 
 
+
+@bp.route("/test")
+def test():
+    return render_template("area/test.html")
+
+
 def covid_data_by_date(df1, df2, date):
     dateStr = datetime.strptime(date, "%Y-%m-%d")
     filter = df2["stdDay"]==dateStr

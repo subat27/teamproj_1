@@ -1,77 +1,22 @@
 {% extends 'base.html' %}
 
-{% block head %}
-<style>
-    /* 페이지의 전체 높이와 너비를 설정합니다. */
-    html,
-    body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    /* 지도 요소의 크기를 설정합니다. */
-    #map {
-        height: 100%;
-    }
-</style>
-{% endblock %}
-
-{% block contents %}
-<div id="map"></div>
-<script>
-    let map;
-    // 지도를 초기화하는 함수
-    function initMap() {
-        // 지도 옵션 설정
-        var mapOptions = {
-            center: { lat: 35.97, lng: 127.92 },
-            zoom: 7.5,
-            mapId: '1a50590f00c4b6dd'
-        };
-        // 지도 객체 생성
-        map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-        countryLayer = map.getFeatureLayer('COUNTRY');
-        
-        map.data.loadGeoJson("../../static/data/sido_korea.geojson")
-        map.data.setStyle(function(feature){
-            var color = "blue";
-            return {
-                strokeColor: color,
-                strokeWeight: 1
-            };
-        });
-        
-        const infoWindow = new google.maps.InfoWindow();
-
-        map.data.addListener('click', (event) => {
-            const content=event.feature.getProperty("CTP_ENG_NM")
-            const position=event.feature.getGeometry()
-            
-            infoWindow.setContent(content);
-            infoWindow.setPosition({ lat: 35.97, lng: 127.92 });
-            infoWindow.open(map);
-            
-
-            console.log(event.feature.getGeometry());
-        });
-    }
-
-    window.initMap = initMap;
-</script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{api_key}}&callback=initMap" async defer></script>
-<script>
-    (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
-      key: "{{api_key}}",
-      v: "weekly",
-      // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
-      // Add other bootstrap parameters as needed, using camel case.
-    });
-  </script>
-</script>
-
-
-
-
+{% block charts %}
+{% for i in ['대한민국', '일본', '미국', '중국', '영국', '러시아', '캐나다', '브라질', '오스트레일리아', '사우디아라비아', '아르헨티나', '콩고'] %}
+  <div class="col-md-6">
+    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+      <div class="col p-4 d-flex flex-column position-static">
+        <h3 class="mb-0">{{i}}</h3>
+        <div class="mb-1 text-body-secondary">2020~2024</div>
+        <p class="mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+        <a href="#" class="icon-link gap-1 icon-link-hover stretched-link">
+          Continue reading
+          <svg class="bi"><use xlink:href="#chevron-right"/></svg>
+        </a>
+      </div>
+      <div class="col-auto d-none d-lg-block">
+        <img src="/static/img/{{i}}.png" width="300" height="200" class="mb-5">
+      </div>
+    </div>
+  </div>
+{% endfor %}        
 {% endblock %}
