@@ -1,4 +1,6 @@
 from pybo import db
+from datetime import datetime
+import json
 
 class ConfAge(db.Model):
     __tablename__='confAge'
@@ -6,6 +8,12 @@ class ConfAge(db.Model):
     ageArea = db.Column(db.String(20), primary_key=True)
     confCase = db.Column(db.Integer)
     deathCnt = db.Column(db.Integer)
+
+    @classmethod
+    def getColumnList(cls, session):
+        results = session.query(cls.createDt, cls.ageArea, cls.confCase, cls.deathCnt).all()
+        return [row.__dict__ for row in results]
+
     
 class ConfGender(db.Model):
     __tablename__='confGender'
