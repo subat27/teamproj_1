@@ -12,43 +12,60 @@ bp = Blueprint("gender", __name__, url_prefix="/gender")
 
 # 국내의 코로나 데이터를 성별로 출력하기 위해 데이터를 수정하는 코드
 
-@bp.route("/create_gender_chart_img")
-def init_global_data():
-    
-    print(type(ConfGender.getColumnList(db.session)))
-    print(ConfGender.getColumnList(db.session)[0])
+@bp.route("getData")
+def getData():
     
 
     return ""
-    # for area in df1["국가"].unique():
-    #     saveFile(df1, area)
-
-    # return redirect("")
 
 
-# def saveFile(df, area):
-#     filename = area + ".png"
-#     upload_path = makedirectory()
-#     path = os.path.join(upload_path, filename)
-#     path = path.replace("\\", "/")
+@bp.route("/create_gender_chart_img")
+def init_global_data():
+    
+    covid_data_gender = ConfGender.getColumnList(db.session)
 
-#     filter=df["국가"]==area 
-#     temp_df = df[filter]
-#     temp_df.plot(x="날짜", y=["신규확진자"])
-#     plt.savefig(path)
+    df_gender = pd.DataFrame(covid_data_gender)
+    df_gender.rename(columns={
+        "deathCnt" : "사망자수", 
+        "gender" : "성별", 
+        "confCase" : "신규확진자", 
+        "createDt" : "날짜"
+    }, inplace=True)
+    df_gender["날짜"] = pd.to_datetime(df_gender["날짜"])
 
-#     idx = path.find("/static/img")
+    saveFile(df_gender)
 
-#     return path[idx:]
+    return ""
 
-# def makedirectory():
-#     UPLOAD_DIR="pybo/static/img"
-#     name_ymd = datetime.now().strftime("%Y%m%d")
 
-#     new_dir_path = os.path.join(UPLOAD_DIR, name_ymd)
 
-#     if not os.path.exists(new_dir_path):
-#         os.mkdir(new_dir_path)
+def saveFile(df):
+    filename = "gender.png"
+    upload_path = makedirectory()
+    path = os.path.join(upload_path, filename)
+    path = path.replace("\\", "/")
 
-#     return new_dir_path
+    plt.figure(figsize=(13, 8), layout='constrained')
+
+    for gender in df["성별"].unique():
+        filter = df["성별"]==gender
+        plt.plot(df[filter]["날짜"], df[filter]["신규확진자"], label=gender)
+
+    plt.legend(df["성별"].unique())
+    plt.savefig(path)
+    plt.close()
+    idx = path.find("/static/img")
+
+    return path[idx:]
+
+def makedirectory():
+    UPLOAD_DIR="pybo/static/charts"
+    name_ymd = datetime.now().strftime("%Y%m%d")
+
+    new_dir_path = os.path.join(UPLOAD_DIR, name_ymd)
+
+    if not os.path.exists(new_dir_path):
+        os.mkdir(new_dir_path)
+
+    return new_dir_path
 
