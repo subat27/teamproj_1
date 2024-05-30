@@ -14,7 +14,7 @@ def overseas_graph():
 # def korea():
 #     return render_template("overseas/korea.html")
 
-
+# 여기서부터 수정할 것
 @bp.route("/korea", methods=('Get', 'Post'))
 def korea():
     if request.method == 'GET':
@@ -57,25 +57,25 @@ def unitedkingdom():
 def congo():
     return render_template("overseas/country/congo.html")
 
+
+# 여기까지
+# 국가를 입력하면 화면에 그 국가에 대한 정보가 나타나게 구현
+
 @bp.route("/input2", methods=('Get', 'Post'))
 def db_input2():
-
-    df = pd.read_csv("pybo\static\data\COVID19-global.csv")
-
-    df1 = df.copy()
-    df1=df1.drop(columns=df1.columns[[1, 3, 5, 6, 7]])
-
-    df1.rename(columns={'Date_reported':'날짜',
-                        'Country':'국가',
-                        'New_cases':'감염자'}, inplace=True)
-
-    df1["날짜"] = pd.to_datetime(df1["날짜"])
 
     if request.method == 'GET':
         return render_template("overseas/country_input2.html")
 
-    name = request.form['name'] 
+    df = pd.read_csv("pybo\static\data\COVID19-global.csv")
 
+    df1 = df.copy()
+    df1 = df1.drop(columns=df1.columns[[1, 3, 5, 6, 7]])
+    df1.rename(columns={'Date_reported':'날짜',
+                        'Country':'국가',
+                        'New_cases':'감염자'}, inplace=True)
+    df1["날짜"] = pd.to_datetime(df1["날짜"])
+    
     # 240국가를 db에 저장해주는 코드 ######
     for name in df1["국가"].unique():
         print(":::::::::::::::::::")
@@ -83,24 +83,6 @@ def db_input2():
         country = Country(name=name)
         db.session.add(country)
         db.session.commit()
+
     return render_template("")
-
-
-@bp.route("/input", methods=('Get', 'Post'))
-def db_input():
-
-    if request.method == 'GET':
-        return render_template("overseas/country_input.html")
- 
-    name = request.form['name'] 
-
-    country = Country(name=name)
-
-    db.session.add(country)
-    db.session.commit()
- 
-    return render_template("overseas/country_input.html")
-
-
-
  

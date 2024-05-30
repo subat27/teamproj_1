@@ -40,23 +40,6 @@ def domestic():
 def overseas():
     return render_template("status/overseas.html")
 
-# 해외 현황 페이지 연결
-@bp.route("/canada", methods=("GET",))
-def canada():
-    return render_template("overseas/canada.html")
-                   
-#나라 변수 설정 아직 적용안됨
-@bp.route("/search/<country_id>",methods=("POST",))
-def search(country_id):
-    search = request.form["search"]
-    country=db.query.get(country_id)
-    
-                                                #글자를 하나씩나눌수있음
-    return render_template("overseas/canada.html", search=search, country=country )
-#=========================안영호추가
-
-
-
 
 @bp.route("show_data", methods=["GET", "POST"])
 def show_data():
