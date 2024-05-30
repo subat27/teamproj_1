@@ -19,6 +19,10 @@ class ConfGender(db.Model):
     gender = db.Column(db.String(20), primary_key=True)
     confCase = db.Column(db.Integer)
     deathCnt = db.Column(db.Integer)
+    @classmethod
+    def getColumnList(cls, session):
+        results = session.query(cls.createDt, cls.gender, cls.confCase, cls.deathCnt).all()
+        return [row.__dict__ for row in results]
     
 class ConfLocal(db.Model):
     __tablename__='confLocal'

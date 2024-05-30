@@ -21,6 +21,7 @@ from .main_views import saveFile
 from datetime import datetime
 from sqlalchemy import create_engine
 
+# 국내의 코로나 데이터를 지역별로 출력하기 위해 데이터를 수정하는 코드
 
 bp = Blueprint("area", __name__, url_prefix="/area")
 

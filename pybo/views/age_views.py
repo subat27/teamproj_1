@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 
 mpl.rc("font", family="Malgun Gothic")
 
+# 국내의 코로나 데이터를 연령대별로 출력하기 위해 데이터를 수정하는 코드
+
 bp = Blueprint("age", __name__, url_prefix="/age")
 
 @bp.route("/init_global_data")
