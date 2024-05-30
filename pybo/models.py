@@ -1,6 +1,4 @@
 from pybo import db
-from datetime import datetime
-import json
 
 class ConfAge(db.Model):
     __tablename__='confAge'

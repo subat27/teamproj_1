@@ -20,6 +20,6 @@ def create_app():
     app.register_blueprint(age_views.bp)
     app.register_blueprint(area_views.bp)
     app.register_blueprint(gender_views.bp)
-    app.register_blueprint(overseas_views.bp)    
+    app.register_blueprint(overseas_views.bp)
 
     return app

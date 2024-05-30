@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect
 import pandas as pd
 from pybo.models import ConfAge, ConfGender, ConfLocal
 from pybo import db
@@ -20,8 +20,7 @@ bp = Blueprint("main", __name__, url_prefix="/")
 def index():
     return render_template("index.html")
 
-
-@bp.route("init")
+@bp.route("initDB")
 def init_data():
     # 지역 데이터 초기화 
     covid_local = pd.read_csv("pybo\static\data\covid_data_korea_local.csv")
@@ -77,7 +76,6 @@ def init_data():
 
 
     # 연령대별 데이터
-
     covid_age = df1.loc[~filter]
     covid_age = covid_age.rename(columns={'createDt' : '등록일시',
                                           'gubun' : '연령',
@@ -101,29 +99,10 @@ def init_data():
     
     db.session.commit()
 
-    return "완료오"
+    return redirect("/")
 
 
 def saveFile(df, area):
-    # # html 파일로 저장
-    # filename = area + ".html"
-    # upload_path = makedirectory()
-
-    # path = os.path.join(upload_path, filename)
-    # path = path.replace("\\", "/")
-    
-    # if not checkFile(path):
-    #     temp_df = df.loc[df["시도명(영어)"]==area]
-
-    #     fig = plt.figure(figsize=(8, 4), layout='constrained')
-    #     plt.plot(temp_df['기준일자'], temp_df['확진자수'])
-    #     plt.xlabel('기준일자')
-    #     plt.ylabel('확진자수')
-    #     html_graph = mpld3.fig_to_html(fig)
-
-    #     with open(path, "w") as f:
-    #         f.write(html_graph)
-
     # jpg 파일로 저장
     filename = area + ".jpg"
     upload_path = makedirectory()
@@ -140,7 +119,8 @@ def saveFile(df, area):
             plt.ylabel('확진자수')
             plt.legend()
         plt.savefig(path)
-    plt.close()
+        plt.close()
+
     idx = path.find("/static/charts")
 
     return path[idx:]
