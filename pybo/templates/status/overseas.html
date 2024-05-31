@@ -5,7 +5,8 @@
 
 {% block contents %}
 
-<div class="col-md-6  ">
+<div class="container p-3">
+<div class="row border rounded">
   <h4>국외 확진자 발생 현황</h4>
   {% if countries %}
   <div class="input-group">
@@ -29,7 +30,35 @@
   <p>잘못된 접근입니다.</p>
   {% endif %}
 
+  <!-- 기준일자, 국가명, 확진자 수 테이블 -->
+  <div class="col-4 d-lg-block">
+    <table class="table table-success table-striped">
+      <tr>
+        <th>기준일자</th>
+        <td id="stdDay3">
+        {{confglobal[0].createDt}}
 
+        </td>
+      </tr>
+      <tr>
+        <th>국가명</th>
+        <td id="area">
+          {{confglobal[0].nation}}  
+        </td>
+      </tr>
+      <tr>
+        <th>확진자 수</th>
+        <td id="confCase">
+          {{confglobal[0].confCase}}
+        </td>
+      </tr>
+    </table>
+  </div>
+  </div>
+  </div>
+  </div>
+  
+</div>
 </div>
 
 {% endblock %}

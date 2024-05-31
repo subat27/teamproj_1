@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request
 from werkzeug.utils import redirect
-from pybo.models import Country
+from pybo.models import Country, ConfGlobal
 from pybo import db
 import pandas as pd
 from datetime import datetime
@@ -58,7 +58,7 @@ def db_input():
     
     return render_template("overseas/detail/" + country)
 
-
+# 해외 날짜, 국가, 감염자를 db에 저장##########
 @bp.route("/initDB")
 def db_input2():
     df = pd.read_csv("pybo\static\data\COVID19-global.csv")
@@ -68,12 +68,14 @@ def db_input2():
     df1.rename(columns={'Date_reported':'날짜',
                         'Country':'국가',
                         'New_cases':'감염자'}, inplace=True)
-    df1["날짜"] = pd.to_datetime(df1["날짜"])
-    
-    # 240국가를 db에 저장해주는 코드 ######
-    for name in df1["국가"].unique():
-        country = Country(name=name)
-        db.session.add(country)
+
+    for idx in df1.index:
+        createDt = df1.iloc[idx, 0]
+        nation = df1.iloc[idx, 1]
+        confCase = df1.iloc[idx, 2]
+        confglobal = ConfGlobal(createDt=createDt, nation=nation, confCase=confCase)
+        
+        db.session.add(confglobal)
 
     db.session.commit()
 

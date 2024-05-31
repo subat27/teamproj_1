@@ -51,12 +51,11 @@ class ConfLocal(db.Model):
 
 class ConfGlobal(db.Model):
     __tablename__='confGlobal'
-    createDt = db.Column(db.String(20), primary_key=True)
-    ageArea = db.Column(db.String(20), primary_key=True)
-    gender = db.Column(db.String(20), primary_key=True)
-    nation = db.Column(db.String(30))
-    confCase = db.Column(db.Integer)
-    deathCnt = db.Column(db.Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    createDt = db.Column(db.String(20), unique=False)
+    nation = db.Column(db.String(30), unique=False, nullable=True)
+    confCase = db.Column(db.Integer, unique=False, nullable=True)
+    deathCnt = db.Column(db.Integer, unique=False, nullable=True)
 
 class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)

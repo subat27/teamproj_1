@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, g, request, url_for, current_app
 from werkzeug.utils import redirect
-from pybo.models import ConfLocal, ConfAge, ConfGender, Country
+from pybo.models import ConfLocal, ConfAge, ConfGender, Country, ConfGlobal
 from pybo import db
 from flask import json
 from datetime import datetime
@@ -43,7 +43,7 @@ def domestic(option):
 @bp.route("/overseas/<int:option>")
 def overseas(option):
     if option==1 :
-        return render_template("status/overseas.html", countries=Country.query.all())
+        return render_template("status/overseas.html", countries=Country.query.all(), confglobal=ConfGlobal.query.all())
     else :
         return render_template("status/overseas.html", map="/static/data/global_map.html")
 
