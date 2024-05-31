@@ -2,80 +2,67 @@
 
 {% block head %}
 
-
 {% endblock %}
 
 {% block contents %}
 
+<div class="container p-3">
+  <div>
+    <div class="row border rounded">
 
-     <h1>국내</h1>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#" class="btn">홈페이지</a>
-          
-          <!--여기부터-->
-          <div class="col-md-4">
-            <label for="state" class="form-label">나라찾기</label>
-            <div class="input-group">
-            
-            <select class="form-select" id="state" required="">
-              <option value="" class="nav-item dropdown">선택</option>
-              <option>일본</option>
-              <option>미국</option>
-              <option>영국</option>
-              <option>캐나다</option>
-              <option>오스트레일리아</option>
-              <option>사우디아라비아</option>
-              <option>브라질</option>
-              <option>영국</option>
-              <option>아르헨티나</option>
-              <option>중국</option>
-              <option>러시아</option>
-            </select>
-            
-             </div>
-            <div class="invalid-feedback">
-              Please provide a valid state.
-            </div>
-          </div>
-          
+      {% if gubun %}
+      <h4>국내 {{"성" if gubun=='gender' else "연령"}}별 현황</h4>
+      <div class="col-8 d-none d-lg-block">
+        <img src="/static/charts/20240530/{{gubun}}.png" alt="/static/charts/20240530/{{gubun}}.png" width="100%"
+          height="100%">
+      </div>
+      {% elif map %}
+      <h4>국내 지역별 현황</h4>
+      <div class="col-8 d-none d-lg-block">
+        <object data="{{map}}" width="100%" height="800px"></object>
+      </div>
+      {% else %}
+      <div class="col-8 d-none d-lg-block">
+        <p>잘못된 접근입니다.</p>
+      </div>
+      {% endif %}
 
-          <!--여기까지 지우면됨-->
-          <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="#">성별</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">연령별</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">지역별</a>
-              </li>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-      <img src="/static/img/대한민국.png" alt="" id="image">
-    <div class="container p-3 ">
-
-        
+      <div class="col-4 d-lg-block">
+        <table class="table table-success table-striped">
+          <tr>
+            <th>기준일자</th>
+            <td id="stdDay"></td>
+          </tr>
+          <tr>
+            <th>지역명</th>
+            <td id="area"></td>
+          </tr>
+          <tr>
+            <th>누적확진자</th>
+            <td id="confCase"></td>
+          </tr>
+        </table>
+      </div>
     </div>
+  </div>
+</div>
 
 {% endblock %}
 
 {% block script %}
+
 <script>
-  $(document).ready(function(){
-    $("#state").change(function(){
-      let state ="/static/img/"+$(this).val()+".png";
-      $("#image").attr("src",state);
-      $("#image").attr("alt",state);
+  $(document).ready(function () {
+    $("object").on('popupopen', function (e) {
+      // 팝업이 열릴 때, 팝업의 내용을 가져옵니다.
+      var popupContent = e.popup.getContent();
+
+      // 팝업 내용을 콘솔에 출력합니다.
+      console.log(popupContent);
     });
   });
 
 </script>
+
+
 {% endblock %}
-
-

@@ -9,8 +9,16 @@ class ConfAge(db.Model):
 
     @classmethod
     def getColumnList(cls, session):
-        results = session.query(cls.createDt, cls.ageArea, cls.confCase, cls.deathCnt).all()
-        return [row.__dict__ for row in results]
+        results = []
+        for data in session.query(cls).all() :
+            temp_dict = data.__dict__
+            for key in temp_dict.keys():
+                if type(temp_dict[key]) is bytes:
+                    temp_dict[key] = int.from_bytes(temp_dict[key], byteorder="little")
+            temp_dict.pop('_sa_instance_state')
+            results.append(temp_dict)
+        return results
+                
 
     
 class ConfGender(db.Model):
@@ -19,6 +27,18 @@ class ConfGender(db.Model):
     gender = db.Column(db.String(20), primary_key=True)
     confCase = db.Column(db.Integer)
     deathCnt = db.Column(db.Integer)
+    
+    @classmethod
+    def getColumnList(cls, session):
+        results = []
+        for data in session.query(cls).all() :
+            temp_dict = data.__dict__
+            for key in temp_dict.keys():
+                if type(temp_dict[key]) is bytes:
+                    temp_dict[key] = int.from_bytes(temp_dict[key], byteorder="little")
+            temp_dict.pop('_sa_instance_state')
+            results.append(temp_dict)
+        return results
     
 class ConfLocal(db.Model):
     __tablename__='confLocal'
@@ -40,4 +60,5 @@ class ConfGlobal(db.Model):
 
 class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(50), unique=True, nullable=True)
+    hangeul = db.Column(db.String(50), unique=True, nullable=True)
