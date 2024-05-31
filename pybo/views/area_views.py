@@ -98,10 +98,6 @@ def create_geo_data():
 
     covid_map = folium.Map(location=[36.3, 128.1], zoom_start=7, zoom_control=True, control_scale=True)
 
-    my_js = '''
-    console.log('working perfectly')
-    '''
-    covid_map.get_root().script.add_child(branca.element.Element(my_js))
 
     popup = folium.GeoJsonPopup(
         fields=["gubun", "defCnt"],
