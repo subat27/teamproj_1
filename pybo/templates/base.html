@@ -26,7 +26,6 @@
 </head>
 
 <body>
-
   <!-- Header -->
   <div class="container">
     <header class="border-bottom lh-1 py-3">
@@ -49,23 +48,12 @@
         <div class="collapse navbar-collapse" id="navbarScroll">
           <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
             <!-- 국내 현황 -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">국내 현황</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/area/domestic/1">성별현황</a></li>
-                <li><a class="dropdown-item" href="/area/domestic/2">연령별현황</a></li>
-                <li><a class="dropdown-item" href="/area/domestic/3">지역별현황</a></li>
-              </ul>
+            <li class="nav-item">
+              <a class="nav-link" href="/domestic">국내 현황</a>
             </li>
             <!-- 해외 현황 -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">해외 현황</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/area/overseas/1">chart</a></li>
-                <li><a class="dropdown-item" href="/area/overseas/2">map</a></li>
-              </ul>
+            <li class="nav-item">
+              <a class="nav-link" href="/overseas">해외 현황</a>
             </li>
             <!-- 분석 -->
             <li class="nav-item">
@@ -85,41 +73,9 @@
 
 
   <!-- Contents -->
-  <main class="container">
+  {% block contents %}
 
-    <!-- Logo -->
-
-    {% block contents %}
-
-    {% endblock %}
-
-    <div class="row mb-2">
-      {% block charts %}
-
-      {% endblock %}
-
-    </div>
-
-
-    <!-- 추후 기능 추가 공간 할당 -->
-    <div class="row g-5">
-      <div class="col-md-8">
-      </div>
-      <div class="col-md-4">
-        <div class="position-sticky" style="top: 2rem;">
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- <footer class="py-5 text-center text-body-secondary bg-body-tertiary">
-    <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a
-        href="https://twitter.com/mdo">@mdo</a>.</p>
-    <p class="mb-0">
-      <a href="#">Back to top</a>
-    </p>
-  </footer> -->
+  {% endblock %}
 
   <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

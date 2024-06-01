@@ -1,129 +1,130 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, request, jsonify
 from werkzeug.utils import redirect
-from pybo.models import Country
+from pybo.models import ConfGlobal
 from pybo import db
 import pandas as pd
 from datetime import datetime
-import os
-import matplotlib as mpl
-import matplotlib.pyplot as plt
+import folium
 
 bp = Blueprint("overseas", __name__, url_prefix="/overseas")
 
 # 해외의 코로나 데이터를 출력하기 위해 데이터를 수정하는 코드
 
-@bp.route("/graph")
-def overseas_graph():
-    country = Country.query.all()
-    filepath_date = datetime.now().strftime("%Y%m%d")
+def init_DB():
+    df1 = pd.read_csv("pybo\static\data\overseas_covid_data.csv")
+    df2 = pd.read_csv("pybo\static\data\country_code.csv")
+
+    df1[["New_deaths", "New_cases"]] = df1[["New_deaths", "New_cases"]].fillna(0).copy()
+    df1.drop(columns=["WHO_region"], inplace=True)
+
+    covid_global = pd.merge(df1, df2, how="inner", left_on="Country_code", right_on="code")
+    covid_global = covid_global[['Date_reported', 'name(kr)', 'name(en)', 'Cumulative_cases', 'Cumulative_deaths', 'New_cases', 'New_deaths', 'code']]
+    covid_global["code"] = covid_global["code"].fillna("NB")
+
+    covid_global = covid_global.rename(columns={'Date_reported' : '등록일시', 'name(kr)': '국가명', 'name(en)' : '국가명(영문)', 'Cumulative_cases' : '확진자수',
+                                                'Cumulative_deaths' : '사망자수', 'New_cases' : '신규확진자수', 'New_deaths' : '신규사망자수', 'code' : '국가코드'})
+
+    for x in covid_global.index:
+        db.session.add(ConfGlobal(createDt=covid_global.iloc[x, 0],
+                                  nation_kr=covid_global.iloc[x, 1],
+                                  nation_en=covid_global.iloc[x, 2],
+                                  confCase=int(covid_global.iloc[x, 3]),
+                                  deathCnt=int(covid_global.iloc[x, 4]),
+                                  newConfCase=int(covid_global.iloc[x, 5]),
+                                  newDeathCase=int(covid_global.iloc[x, 6]),
+                                  code=covid_global.iloc[x, 7]))
+
+@bp.route("getCountryList", methods=["POST"])
+def getCountryList():
+    conf_global_list = ConfGlobal.query.all()
+
+    country_list = {}
+
+    for x in conf_global_list:
+        country_list.setdefault(x.nation_kr, x.code)
+
+    return jsonify(country_list)
+
+@bp.route("getData", methods=["POST"])
+def getData():
+    data = request.json
+    code = data.get("code")
     
-    return render_template("overseas/overseas_graph.html", country=country, filepath_date=filepath_date)
+    conf_global_list = ConfGlobal.query.filter_by(code=code).all()
 
-@bp.route("/hangeul")
-def hangeul():
-    df1 = pd.read_csv("pybo\static\data\COVID19-global.csv")
-    df2 = pd.read_csv("pybo\static\data\Country_code.csv")
-    merge_df = pd.merge(df1, df2, how="inner", left_on="Country_code", right_on="code")
-    df3 = merge_df.loc[:, ['Country_code', 'Country', 'name(kr)', 'name(en)', 'code']]
-    filter = df3['Country_code']==df3['code']
-    df3[filter]
-    #code 같은 것만 df3에 저장되게
-    df3 = df3[filter].drop_duplicates(['Country'])
+    datasets = {}
 
-    # 240국가를 db에 저장해주는 코드 ######
-    for idx in df3.reset_index().drop(columns=["index"]).index:
-        name_en = df3.iloc[idx, 1]
-        name_kr = df3.iloc[idx, 2]
+    for x in conf_global_list:
+        data = {
+            "createDt" : x.createDt,
+            "confCase" : x.confCase,
+            "deathCnt" : x.deathCnt,
+            "newConfCase" : x.newConfCase,
+            "newDeathCase" : x.newDeathCase,
+        }
+        temp = datasets.get(x.nation_kr, list())
+        temp.append(data)
+        datasets.setdefault(x.nation_kr, temp)
 
-        country = Country(name=name_en, hangeul=name_kr)
+    return jsonify(datasets)
 
-        db.session.add(country)
-    db.session.commit()
+# 전세계 정보를 화면에 출력해주는 기능
+@bp.route("get_html", methods=["POST"])
+def create_global_geo_data():
+    with open("pybo\static\data\overseas_geodata.geojson", "r", encoding="utf-8") as file:
+        geo = file.read()
+        file.close()
 
-    return redirect("/")
+    conf_global_list = []
+    for x in ConfGlobal.query.filter_by(createDt="2024-05-12").all():
+        data = {
+            "nation_kr" : x.nation_kr,
+            "nation_en" : x.nation_en,
+            "confCase" : x.confCase,
+            "deathCnt" : x.deathCnt,
+            "newConfCase" : x.newConfCase,
+            "newDeathCase" : x.newDeathCase,
+            "code" : x.code
+        }
+        conf_global_list.append(data)
 
-
-@bp.route("/detail/<country>")
-def detail(country):
-    countryData = Country.query.filter_by(name=country).get()
-    return render_template("", countryData=countryData)
-
-# 국가를 입력하면 화면에 그 국가에 대한 정보가 나타나게 구현
-@bp.route("/find/<country>", methods=('GET', 'POST'))
-def db_input():
-    if request.method == "GET" :
-        return render_template("country_input.html")
     
-    country = request.form["country"]
+    covid_global_geo_df = pd.DataFrame(conf_global_list)
+    covid_global_geo_df = covid_global_geo_df.rename(columns={"nation_kr" : "국가명", "nation_en" : "국가명(영문)", "confCase" : "누적확진자수", "deathCnt" : "누적사망자수", "newConfCase" : "신규확진자수", "newDeathCase" : "신규사망자수", "code" : "국가코드"})
+
+    covid_map = folium.Map(location=[51.95, 19.15], zoom_start=2, zoom_control=True, control_scale=True)
+
+    cp = folium.Choropleth(
+        geo_data=geo,
+        name="choropleth",
+        data=covid_global_geo_df,
+        key_on="feature.properties.ISO",
+        columns=["국가코드", "누적확진자수"],
+        fill_color="Blues",
+        fill_opacity=0.8,
+        line_opacity=0.8,
+        
+    ).add_to(covid_map)
+
+    state_data_indexed = covid_global_geo_df.set_index('국가코드')
+    for s in cp.geojson.data['features']:
+        try:
+            s['properties']['confCase'] = int(state_data_indexed.loc[s['properties']['ISO'], "누적확진자수"])
+            s['properties']['COUNTRY_KR'] = state_data_indexed.loc[s['properties']['ISO'], "국가명"]
+        except:
+            pass
     
-    return render_template("overseas/detail/" + country)
+    popup = folium.GeoJsonPopup(
+        fields=["COUNTRY_KR", "confCase"],
+        aliases=["국가명", "누적확진자"],
+        localize=True,
+        labels=True,
+        style="""
+            background-color: yellow;
+            border: none;
+        """
+    ).add_to(cp.geojson)
 
+    folium.LayerControl().add_to(covid_map)
 
-@bp.route("/initDB")
-def db_input2():
-    df = pd.read_csv("pybo\static\data\COVID19-global.csv")
-
-    df1 = df.copy()
-    df1 = df1.drop(columns=df1.columns[[1, 3, 5, 6, 7]])
-    df1.rename(columns={'Date_reported':'날짜',
-                        'Country':'국가',
-                        'New_cases':'감염자'}, inplace=True)
-    df1["날짜"] = pd.to_datetime(df1["날짜"])
-    
-    # 240국가를 db에 저장해주는 코드 ######
-    for name in df1["국가"].unique():
-        country = Country(name=name)
-        db.session.add(country)
-
-    db.session.commit()
-
-    return redirect("/")
-
-# 해외 데이터를 이미지화한 파일을 저장하는 함수
-@bp.route("createImgFile")
-def init_overseas_data():
-    df = pd.read_csv("pybo\static\data\COVID19-global.csv")
-
-    df1 = df.copy()
-    df1=df1.drop(columns=df1.columns[[1, 3, 6, 7]])
-
-    df1.rename(columns={'Date_reported':'날짜',
-                        'Country':'국가',
-                        'New_cases':'신규확진자',
-                        'Cumulative_cases':'누적확진자'}, inplace=True)
-
-    df1["날짜"] = pd.to_datetime(df1["날짜"])
-       
-    for area in df1["국가"].unique():
-        saveFile(df1, area)
-
-    return redirect("/")
-
-
-def saveFile(df, area):
-    filename = area + ".png"
-    upload_path = makedirectory()
-    path = os.path.join(upload_path, filename)
-    path = path.replace("\\", "/")
-
-    filter=df["국가"]==area 
-    temp_df = df[filter]
-    temp_df.plot(x="날짜", y=["신규확진자"])
-    plt.savefig(path)
-    plt.close()
-
-    idx = path.find("/static/img")
-
-    return path[idx:]
-
-def makedirectory():
-    UPLOAD_DIR="pybo/static/img"
-    name_ymd = datetime.now().strftime("%Y%m%d")
-
-    new_dir_path = os.path.join(UPLOAD_DIR, name_ymd)
-
-    if not os.path.exists(new_dir_path):
-        os.mkdir(new_dir_path)
-
-    return new_dir_path
- 
+    return covid_map._repr_html_()

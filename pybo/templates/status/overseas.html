@@ -5,43 +5,281 @@
 
 {% block contents %}
 
-<div class="col-md-6  ">
-  <h4>국외 확진자 발생 현황</h4>
-  {% if countries %}
-  <div class="input-group">
-    <div>
-      <select class="form-select" id="state">
-        <option value="">국가선택</option>
-        {% for country in countries %}
-        <option value="{{country.name}}">{{ country.hangeul }}</option>
-        {% endfor %}
-      </select>
+<div class="container p-3">
+  <div class="col-md-12">
+    <div class="input-group">
+      <button class="btn btn-secondary" type="button" id="overseas_each">국가별 현황</button>
+      <button class="btn btn-secondary" type="button" id="overseas_all">전세계 현황</button>
+    </div>
+    <h4 id="overseas_title"></h4>
+    <div class="row border rounded">
+      <div class="col-12" id="chart">
+        <div class="input-group">
+          <select class="form-select" id="state">
+          </select>
+        </div>
+
+        <div class="row justify-content-md-center">
+          <div class="col-10">
+            <canvas id="resultChart_line_def"></canvas>
+          </div>
+          <div class="col-10">
+            <canvas id="resultChart_line_new"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div id="map">
+        <div class="col-12" id="map_data">
+
+        </div>
+      </div>
+
     </div>
   </div>
-  <div>
-    <img src="#" alt="" id="image">
-  </div>
-  {% elif map %}
-  <div>
-    <object data="{{map}}" width="100%" height="500px">
-  </div>
-  {% else %}
-  <p>잘못된 접근입니다.</p>
-  {% endif %}
-
-
 </div>
 
 {% endblock %}
 
 {% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script>
+  const STORED_COLORS = [
+    'rgba(234, 56, 78, 0.45)',
+    'rgba(123, 45, 67, 0.89)',
+    'rgba(12, 98, 210, 0.67)',
+    'rgba(255, 165, 0, 0.23)',
+    'rgba(75, 0, 130, 0.54)',
+    'rgba(0, 255, 127, 0.61)',
+    'rgba(70, 130, 180, 0.75)',
+    'rgba(210, 105, 30, 0.47)',
+    'rgba(100, 149, 237, 0.84)',
+    'rgba(135, 206, 250, 0.65)',
+    'rgba(255, 20, 147, 0.50)',
+    'rgba(255, 0, 255, 0.37)'
+  ];
+
   $(document).ready(function () {
+    // domestic 페이지 시작될 때 실행되는 코드
+    var resultChart_line;
+    var resultChart_pie;
+
+    init_selectBox();
+
     $("#state").change(function () {
-      let state = "/static/img/20240530/" + $(this).val() + ".png";
-      $("#image").attr("src", state);
-      $("#image").attr("alt", state);
+      var selectedValue = $("#state").val();
+      $.ajax({
+        url: "/overseas/getData",
+        method: "POST",
+        contentType: 'application/JSON',
+        data: JSON.stringify({ code: selectedValue }),
+        success: function (data) {
+          var ctx = document.getElementById('resultChart_line_def').getContext('2d');
+          var config = create_line_chart(data)[0];
+          if (typeof resultChart_line != "undefined") {
+            resultChart_line.destroy()
+          }
+          resultChart_line = new Chart(ctx, config);
+
+          var ctx2 = document.getElementById('resultChart_line_new').getContext('2d');
+          var config2 = create_line_chart(data)[1];
+          if (typeof resultChart_pie != "undefined") {
+            resultChart_pie.destroy()
+          }
+          resultChart_pie = new Chart(ctx2, config2);
+        },
+        error: function (xhr, status, error) {
+          console.log('Failed to fetch covid_data', status, error);
+        }
+      });
     });
+
+    $("#overseas_each").click(function () {
+      $("div#map").hide()
+      $("div#chart").show()
+      init_selectBox();
+    });
+
+    $("#overseas_all").click(function () {
+      $.ajax({
+        url: "/overseas/get_html",
+        method: "POST",
+        success: function (data) {
+          $("div#map").show()
+          $("div#chart").hide()
+          $("#overseas_title").html("전세계 현황")
+          $("#map_data").html(data)
+        },
+        error: function (xhr, status, error) {
+          console.log('Failed to fetch covid_data', status, error);
+        }
+      });
+
+    });
+
+    function create_line_chart(data) {
+      var datasets = [];
+      var color_index = 0;
+
+      for (const key in data) {
+        var createDt_list = [];
+        var confCase_list = [];
+        var newConfCase_list = [];
+
+        data[key].forEach(function (covid_data) {
+          createDt_list.push(covid_data.createDt);
+          confCase_list.push(covid_data.confCase);
+          newConfCase_list.push(covid_data.newConfCase);
+        });
+
+        const dsColor = STORED_COLORS[color_index++ % STORED_COLORS.length];
+        var dataset1 = {
+          label: key,
+          data: confCase_list,
+          backgroundColor: dsColor,
+          borderColor: dsColor
+        };
+
+        var dataset2 = {
+          label: key,
+          data: newConfCase_list,
+          backgroundColor: dsColor,
+          borderColor: dsColor
+        };
+
+      }
+
+      labels = createDt_list;
+
+      const config1 = {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [dataset1]
+        },
+        options: {
+          responsive: true,
+          interaction: {
+            mode: "index",
+            intersect: false
+          },
+          stacked: false,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: true,
+              text: '일자별 누적 확진자 수 (2020.01.05 ~ 2024.05.12)'
+            }
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              beginAtZero: true
+            }
+          }
+        }
+      }
+      const config2 = {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [dataset2]
+        },
+        options: {
+          responsive: true,
+          interaction: {
+            mode: "index",
+            intersect: false
+          },
+          stacked: false,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: true,
+              text: '일자별 신규 확진자 수 (2020.01.05 ~ 2024.05.12)'
+            }
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              beginAtZero: true
+            }
+          }
+        }
+      }
+      return [config1, config2];
+    };
+
+    function create_pie_chart(data, gubun) {
+      var datasets = [];
+      var confCase_list = [];
+      var labels = [];
+      var colors = [];
+
+      var color_index = 0;
+
+      for (const key in data) {
+        labels.push(key);
+        temp_length = data[key].length;
+        confCase_list.push(data[key][temp_length - 1].confCase);
+        colors.push(STORED_COLORS[color_index++ % STORED_COLORS.length]);
+      }
+
+      var dataset = {
+        label: gubun,
+        data: confCase_list,
+        backgroundColor: colors
+      };
+
+      datasets.push(dataset);
+
+      const config = {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: true,
+              text: gubun + '별 확진자수 분포'
+            }
+          }
+        }
+      };
+
+      return config;
+    };
+
+    function init_selectBox() {
+      $.ajax({
+        url: "/overseas/getCountryList",
+        method: "POST",
+        success: function (data) {
+          var options = `<option value="">국가선택</option>`;
+          for (var x in data) {
+            options = options + `<option value="` + data[x] + `">` + x + `</option>`;
+          }
+          $("#state").html(
+            options
+          );
+        },
+        error: function (xhr, status, error) {
+          console.log('Failed to fetch covid_data', status, error);
+        }
+      });
+    };
   });
+
 </script>
 {% endblock %}

@@ -17,12 +17,6 @@ def test():
     
     return render_template("domestic/domestic_gender.html")
 
-@bp.route("getData")
-def getData():
-    
-
-    return ""
-
 
 @bp.route("/create_gender_chart_img")
 def init_global_data():
